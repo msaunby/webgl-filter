@@ -379,9 +379,13 @@ $(window).load(function() {
         loadImage(e.target.src);
     });
     $('#save').click(function() {
-        //canvas.update();
         window.open(canvas.update().toDataURL('image/png'));
-
+    });
+    $('#export').click(function() {
+        var bw = fx.canvas();
+        var texture = bw.texture(canvas.update());
+        bw.draw(texture).hueSaturation(0,-1).update();
+        window.open(bw.toDataURL('image/png'));
     });
     $('#about').click(function() {
         $('#dialog').html('<div class="contents">Copyright 2011 <a href="http://madebyevan.com">Evan Wallace</a>' +
