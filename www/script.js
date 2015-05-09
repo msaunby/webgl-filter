@@ -383,9 +383,27 @@ $(window).load(function() {
     });
     $('#export').click(function() {
         var bw = fx.canvas();
+        // use current canvas image as source.
         var texture = bw.texture(canvas.update());
         bw.draw(texture).hueSaturation(0,-1).update();
-        window.open(bw.toDataURL('image/png'));
+        var tmpcanv = document.createElement('canvas');
+        tmpcanv.width = 400;
+        tmpcanv.height = 240;
+        var src_aspect = bw.width / bw.height;
+        var dst_aspect = tmpcanv.width / tmpcanv.height;
+        var min_x = 0; var max_x = tmpcanv.width;
+        var min_y = 0; var max_y = tmpcanv.height;
+        if(src_aspect > dst_aspect){
+          // trim width
+          max_x = tmpcanv.height * src_aspect;
+          min_x = (tmpcanv.width - max_x) * 0.5;
+        }else{
+          // trim height
+          max_y = tmpcanv.width / src_aspect;
+          min_y = (tmpcanv.height - max_y) * 0.5;
+        }
+        tmpcanv.getContext('2d').drawImage(bw, min_x, min_y, max_x, max_y);
+        window.open(tmpcanv.toDataURL('image/png'));
     });
     $('#about').click(function() {
         $('#dialog').html('<div class="contents">Copyright 2011 <a href="http://madebyevan.com">Evan Wallace</a>' +
